@@ -34,7 +34,7 @@ php artisan db:seed
 php artisan serve
 
 9. Open in browser:
-http://127.0.0.1:8000
+https://hopecarehospital.free.laravel.cloud
 
 ## Features
 - Dashboard with statistics and charts
