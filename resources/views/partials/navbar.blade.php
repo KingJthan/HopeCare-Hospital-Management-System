@@ -1,6 +1,22 @@
 <nav class="navbar navbar-expand-lg top-navbar shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('portal') }}">
+        @php
+            $brandRoute = route('portal');
+
+            if(auth()->check()) {
+                if(auth()->user()->hasRole('admin')) {
+                    $brandRoute = route('admin.dashboard');
+                } elseif(auth()->user()->hasRole('doctor')) {
+                    $brandRoute = route('doctor.dashboard');
+                } elseif(auth()->user()->hasRole('receptionist')) {
+                    $brandRoute = route('receptionist.dashboard');
+                } elseif(auth()->user()->hasRole('patient')) {
+                    $brandRoute = route('patient.dashboard');
+                }
+            }
+        @endphp
+
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ $brandRoute }}">
             <img src="{{ asset('images/logo.jpg') }}" alt="HopeCare Logo" class="site-logo">
             <div>
                 <span class="brand-title">HopeCare Hospital</span>
@@ -8,7 +24,7 @@
             </div>
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -17,20 +33,21 @@
                 <li class="nav-item">
                     @auth
                         @php
-                            $dashboardRoute = 'dashboard';
+                            $dashboardRouteName = 'portal';
 
-                            if (auth()->user()->hasRole('admin')) {
-                                $dashboardRoute = 'admin.dashboard';
-                            } elseif (auth()->user()->hasRole('doctor')) {
-                                $dashboardRoute = 'doctor.dashboard';
-                            } elseif (auth()->user()->hasRole('receptionist')) {
-                                $dashboardRoute = 'receptionist.dashboard';
-                            } elseif (auth()->user()->hasRole('patient')) {
-                                $dashboardRoute = 'patient.dashboard';
+                            if(auth()->user()->hasRole('admin')) {
+                                $dashboardRouteName = 'admin.dashboard';
+                            } elseif(auth()->user()->hasRole('doctor')) {
+                                $dashboardRouteName = 'doctor.dashboard';
+                            } elseif(auth()->user()->hasRole('receptionist')) {
+                                $dashboardRouteName = 'receptionist.dashboard';
+                            } elseif(auth()->user()->hasRole('patient')) {
+                                $dashboardRouteName = 'patient.dashboard';
                             }
                         @endphp
 
-                        <a class="nav-link {{ request()->routeIs($dashboardRoute) ? 'active-top-link' : '' }}" href="{{ route($dashboardRoute) }}">
+                        <a class="nav-link {{ request()->routeIs($dashboardRouteName) ? 'active-top-link' : '' }}"
+                           href="{{ route($dashboardRouteName) }}">
                             Dashboard
                         </a>
                     @else

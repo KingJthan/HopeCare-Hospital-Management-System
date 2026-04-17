@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendOtpMail;
-use App\Models\User;
 use App\Models\Patient;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,18 +35,10 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'patient',
             'email_otp' => $otp,
             'otp_expires_at' => now()->addMinutes(10),
         ]);
-
-        if (
-            $user->hasRole('admin') === false
-            && $user->hasRole('doctor') === false
-            && $user->hasRole('receptionist') === false
-            && $user->hasRole('patient') === false
-        ) {
-            $user->assignRole('patient');
-        }
 
         Patient::create([
             'user_id' => $user->id,
@@ -65,51 +57,65 @@ class AuthController extends Controller
         return redirect()->route('verify.notice')->with('success', 'OTP sent to your email.');
     }
 
-    public function showLogin()
+    public function showLogin($role = null)
     {
-        return view('auth.login', ['roleLabel' => 'User']);
+        $allowedRoles = ['admin', 'doctor', 'receptionist', 'patient'];
+
+        if ($role !== null) {
+            $role = strtolower($role);
+
+            if (!in_array($role, $allowedRoles, true)) {
+                abort(404);
+            }
+        }
+
+        return view('auth.login', [
+            'roleLabel' => $role ? ucfirst($role) : 'User',
+            'expectedRole' => $role ?? '',
+        ]);
     }
 
-public function login(Request $request)
-{
-    $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-        'expected_role' => ['nullable', 'string'],
-    ]);
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+            'expected_role' => ['nullable', 'string'],
+        ]);
 
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return back()->withErrors([
-            'email' => 'Invalid email or password.',
-        ])->withInput();
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return back()->withErrors([
+                'email' => 'Invalid email or password.',
+            ])->withInput();
+        }
+
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+        $expectedRole = strtolower(trim($request->expected_role ?? ''));
+
+        if ($expectedRole !== '' && strtolower((string) $user->role) !== $expectedRole) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'You do not have access to the selected portal.',
+            ])->withInput();
+        }
+
+        $otp = (string) random_int(100000, 999999);
+
+        $user->update([
+            'email_otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        Mail::to($user->email)->send(new SendOtpMail($otp, $user->name));
+
+        return redirect()->route('verify.notice')->with('success', 'OTP sent to your email.');
     }
 
-    $request->session()->regenerate();
-
-    $user = Auth::user();
-    $expectedRole = strtolower($request->expected_role ?? 'user');
-
-    if ($expectedRole !== 'user' && !$user->hasRole($expectedRole)) {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return back()->withErrors([
-            'email' => 'You do not have access to the selected portal.',
-        ])->withInput();
-    }
-
-    $otp = (string) random_int(100000, 999999);
-
-    $user->update([
-        'email_otp' => $otp,
-        'otp_expires_at' => now()->addMinutes(10),
-    ]);
-
-    Mail::to($user->email)->send(new SendOtpMail($otp, $user->name));
-
-    return redirect()->route('verify.notice')->with('success', 'OTP sent to your email.');
-}
     public function showVerifyOtp()
     {
         return view('auth.verify-otp');

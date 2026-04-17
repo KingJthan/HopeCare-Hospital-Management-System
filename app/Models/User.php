@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
         'email_otp',
         'otp_expires_at',
         'email_verified_at',
@@ -36,8 +36,32 @@ class User extends Authenticatable
         ];
     }
 
-    public function patient()
+    public function hasRole($roles): bool
     {
-        return $this->hasOne(Patient::class);
+        $userRole = strtolower((string) $this->role);
+
+        if (is_string($roles)) {
+            $roles = explode('|', $roles);
+        }
+
+        if (!is_array($roles)) {
+            return $userRole === strtolower((string) $roles);
+        }
+
+        $flatRoles = [];
+
+        array_walk_recursive($roles, function ($role) use (&$flatRoles) {
+            if (is_string($role)) {
+                foreach (explode('|', $role) as $singleRole) {
+                    $singleRole = trim($singleRole);
+
+                    if ($singleRole !== '') {
+                        $flatRoles[] = strtolower($singleRole);
+                    }
+                }
+            }
+        });
+
+        return in_array($userRole, $flatRoles, true);
     }
 }

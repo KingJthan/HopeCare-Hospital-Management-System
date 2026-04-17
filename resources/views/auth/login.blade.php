@@ -117,14 +117,18 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
 
+                @if($errors->any())
+                    <div class="alert alert-danger">{{ $errors->first() }}</div>
+                @endif
+
                 <div class="role-badge">{{ $roleLabel ?? 'User' }} Portal</div>
                 <div class="brand-title">{{ $roleLabel ?? 'User' }} Login</div>
-                <div class="brand-subtitle">Sign in to continue to the hospital system</div>
+                <div class="brand-subtitle">Sign in to continue to the hospital system.</div>
 
                 <form method="POST" action="{{ route('login.store') }}">
                     @csrf
 
-                    <input type="hidden" name="expected_role" value="{{ strtolower($roleLabel ?? 'user') }}">
+                    <input type="hidden" name="expected_role" value="{{ strtolower($expectedRole ?? '') }}">
 
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>
@@ -145,7 +149,7 @@
                     <button type="submit" class="btn btn-primary btn-login w-100">Login</button>
                 </form>
 
-                @if(($roleLabel ?? '') === 'Patient')
+                @if(($expectedRole ?? '') === 'patient')
                     <div class="mt-4 text-center small-link">
                         New patient? <a href="{{ route('register') }}">Register here</a>
                     </div>
