@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | HopeCare Hospital</title>
+    <title>Staff Register | HopeCare Hospital</title>
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <style>
         body {
@@ -11,8 +11,8 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background:
-                linear-gradient(rgba(16, 44, 84, 0.55), rgba(16, 44, 84, 0.55)),
-                url('{{ asset('images/baby-patient.jpg') }}') center center / cover no-repeat;
+                linear-gradient(rgba(16, 44, 84, 0.6), rgba(16, 44, 84, 0.6)),
+                url('{{ asset('images/nurse-smile.jpg') }}') center center / cover no-repeat;
         }
 
         .register-wrapper {
@@ -25,7 +25,7 @@
 
         .register-card {
             width: 100%;
-            max-width: 700px;
+            max-width: 620px;
             background: rgba(255, 255, 255, 0.96);
             border-radius: 18px;
             box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
@@ -58,6 +58,16 @@
         .btn-register:hover {
             background: #184f90;
         }
+
+        .notice-box {
+            background: #eaf3ff;
+            border: 1px solid #cfe2ff;
+            border-radius: 12px;
+            color: #173b6d;
+            padding: 12px 14px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
     </style>
 </head>
 <body>
@@ -67,10 +77,18 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <div class="register-title">Create Account</div>
-            <div class="register-subtitle">Register to access HopeCare Hospital portal</div>
+            @if($errors->any())
+                <div class="alert alert-danger">{{ $errors->first() }}</div>
+            @endif
 
-            <form method="POST" action="{{ route('register.store') }}">
+            <div class="register-title">Create Staff Account</div>
+            <div class="register-subtitle">Register as a clinical, care support, facilities, or security staff member.</div>
+
+            <div class="notice-box">
+                Admin accounts are not created from this public form. Use this page for approved staff roles only.
+            </div>
+
+            <form method="POST" action="{{ route('staff.register.store') }}">
                 @csrf
 
                 <div class="row g-3">
@@ -90,30 +108,17 @@
                         @enderror
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Gender</label>
-                        <select name="gender" class="form-select" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
-                            <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female</option>
+                    <div class="col-12">
+                        <label class="form-label">Staff Role</label>
+                        <select name="role" class="form-select" required>
+                            <option value="">Select Staff Role</option>
+                            @foreach($staffRoles as $value => $label)
+                                <option value="{{ $value }}" {{ old('role') === $value ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('gender')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Age</label>
-                        <input type="number" name="age" class="form-control" value="{{ old('age') }}" min="0" required>
-                        @error('age')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Phone Number</label>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" required>
-                        @error('phone')
+                        @error('role')
                             <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
                     </div>
@@ -126,25 +131,17 @@
                         @enderror
                     </div>
 
-                    <div class="col-12">
-                        <label class="form-label">Address</label>
-                        <textarea name="address" class="form-control" rows="3" required>{{ old('address') }}</textarea>
-                        @error('address')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <label class="form-label">Confirm Password</label>
                         <input type="password" name="password_confirmation" class="form-control" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-register w-100 mt-4">Register</button>
+                <button type="submit" class="btn btn-primary btn-register w-100 mt-4">Register Staff Account</button>
             </form>
 
             <div class="mt-4 text-center">
-                Already have an account? <a href="{{ route('login') }}">Login here</a>
+                Already have a staff account? <a href="{{ route('login.doctor') }}">Login here</a>
             </div>
 
             <div class="mt-2 text-center">

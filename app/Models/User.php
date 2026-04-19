@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use BackedEnum;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -39,29 +41,71 @@ class User extends Authenticatable
     public function hasRole($roles): bool
     {
         $userRole = strtolower((string) $this->role);
+        $normalizedRoles = $this->normalizeRoles($roles);
+
+        return in_array($userRole, $normalizedRoles, true);
+    }
+
+    public function hasAnyRole(...$roles): bool
+    {
+        return $this->hasRole($roles);
+    }
+
+    private function normalizeRoles($roles): array
+    {
+        if ($roles instanceof Collection) {
+            $roles = $roles->all();
+        }
+
+        if ($roles instanceof BackedEnum) {
+            $roles = $roles->value;
+        }
 
         if (is_string($roles)) {
             $roles = explode('|', $roles);
         }
 
         if (!is_array($roles)) {
-            return $userRole === strtolower((string) $roles);
+            $roles = [$roles];
         }
 
         $flatRoles = [];
 
         array_walk_recursive($roles, function ($role) use (&$flatRoles) {
-            if (is_string($role)) {
-                foreach (explode('|', $role) as $singleRole) {
-                    $singleRole = trim($singleRole);
-
-                    if ($singleRole !== '') {
-                        $flatRoles[] = strtolower($singleRole);
-                    }
+            if ($role instanceof Collection) {
+                foreach ($role->all() as $nestedRole) {
+                    $this->normalizeRoleValue($nestedRole, $flatRoles);
                 }
+
+                return;
             }
+
+            $this->normalizeRoleValue($role, $flatRoles);
         });
 
-        return in_array($userRole, $flatRoles, true);
+        return array_values(array_unique($flatRoles));
+    }
+
+    private function normalizeRoleValue($role, array &$flatRoles): void
+    {
+        if ($role instanceof BackedEnum) {
+            $role = $role->value;
+        }
+
+        if (is_object($role) && isset($role->name)) {
+            $role = $role->name;
+        }
+
+        if (!is_scalar($role)) {
+            return;
+        }
+
+        foreach (explode('|', (string) $role) as $singleRole) {
+            $singleRole = strtolower(trim($singleRole));
+
+            if ($singleRole !== '') {
+                $flatRoles[] = $singleRole;
+            }
+        }
     }
 }

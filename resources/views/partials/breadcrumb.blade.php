@@ -15,6 +15,14 @@
             $dashboardRoute = 'doctor.dashboard';
         } elseif(auth()->user()->hasRole('receptionist')) {
             $dashboardRoute = 'receptionist.dashboard';
+        } elseif(auth()->user()->hasRole('nurse')) {
+            $dashboardRoute = 'nurse.dashboard';
+        } elseif(auth()->user()->hasRole('cne')) {
+            $dashboardRoute = 'cne.dashboard';
+        } elseif(auth()->user()->hasRole('housekeeping')) {
+            $dashboardRoute = 'housekeeping.dashboard';
+        } elseif(auth()->user()->hasRole('security')) {
+            $dashboardRoute = 'security.dashboard';
         } else {
             $dashboardRoute = 'patient.dashboard';
         }

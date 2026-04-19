@@ -21,7 +21,7 @@ class SendOtpMail extends Mailable
 
     public function build(): self
     {
-        return $this->subject('Your HopeCare Verification OTP')
+        return $this->subject('Your HopeCare Verification Code')
             ->view('emails.otp');
     }
 }

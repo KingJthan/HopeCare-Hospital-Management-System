@@ -1,8 +1,37 @@
 <aside class="sidebar">
+    @php
+        $workspaceLabel = 'Hospital Workspace';
+
+        if(auth()->check()) {
+            if(auth()->user()->hasRole('admin')) {
+                $workspaceLabel = 'Executive Operations';
+            } elseif(auth()->user()->hasRole('doctor')) {
+                $workspaceLabel = 'Clinical Workspace';
+            } elseif(auth()->user()->hasRole('receptionist')) {
+                $workspaceLabel = 'Front Desk Flow';
+            } elseif(auth()->user()->hasRole('nurse')) {
+                $workspaceLabel = 'Nursing Station';
+            } elseif(auth()->user()->hasRole('cne')) {
+                $workspaceLabel = 'Education & Quality';
+            } elseif(auth()->user()->hasRole('housekeeping')) {
+                $workspaceLabel = 'Facility Readiness';
+            } elseif(auth()->user()->hasRole('security')) {
+                $workspaceLabel = 'Safety Command';
+            } elseif(auth()->user()->hasRole('patient')) {
+                $workspaceLabel = 'Patient Access';
+            }
+        }
+    @endphp
+
     <div class="sidebar-header text-center">
-        <img src="{{ asset('images/nurse-team.jpg') }}" alt="Hospital Team" class="sidebar-image">
-        <h6 class="mt-3 mb-1">Hospital Menu</h6>
-        <p class="small text-muted mb-0">Management System</p>
+        <div class="sidebar-brand-card">
+            <span class="brand-mark sidebar-brand-mark">HC</span>
+            <div>
+                <h6 class="mb-1">Care Command Center</h6>
+                <p class="small mb-0">{{ $workspaceLabel }}</p>
+            </div>
+        </div>
+        <img src="{{ asset('images/team.jpg') }}" alt="Hospital Team" class="sidebar-image">
     </div>
 
     <ul class="sidebar-menu">
@@ -77,6 +106,78 @@
                 <li>
                     <a href="{{ route('treatments.index') }}" class="{{ request()->routeIs('treatments.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-notes-medical"></i> Treatments
+                    </a>
+                </li>
+            @endif
+
+            @if(auth()->user()->hasRole('nurse'))
+                <li>
+                    <a href="{{ route('nurse.dashboard') }}" class="{{ request()->routeIs('nurse.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-nurse"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('patients.index') }}" class="{{ request()->routeIs('patients.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-injured"></i> Patients
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('treatments.index') }}" class="{{ request()->routeIs('treatments.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-notes-medical"></i> Treatments
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('patients.nowServing') }}" class="{{ request()->routeIs('patients.nowServing') ? 'active' : '' }}">
+                        <i class="fa-solid fa-ticket"></i> Queue
+                    </a>
+                </li>
+            @endif
+
+            @if(auth()->user()->hasRole('cne'))
+                <li>
+                    <a href="{{ route('cne.dashboard') }}" class="{{ request()->routeIs('cne.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chalkboard-user"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('patients.index') }}" class="{{ request()->routeIs('patients.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-hospital-user"></i> Patients
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('treatments.index') }}" class="{{ request()->routeIs('treatments.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-notes-medical"></i> Treatments
+                    </a>
+                </li>
+            @endif
+
+            @if(auth()->user()->hasRole('housekeeping'))
+                <li>
+                    <a href="{{ route('housekeeping.dashboard') }}" class="{{ request()->routeIs('housekeeping.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-broom"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('location') }}">
+                        <i class="fa-solid fa-map-location-dot"></i> Facility Map
+                    </a>
+                </li>
+            @endif
+
+            @if(auth()->user()->hasRole('security'))
+                <li>
+                    <a href="{{ route('security.dashboard') }}" class="{{ request()->routeIs('security.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-shield-halved"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('patients.nowServing') }}" class="{{ request()->routeIs('patients.nowServing') ? 'active' : '' }}">
+                        <i class="fa-solid fa-person-walking"></i> Queue Flow
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('location') }}">
+                        <i class="fa-solid fa-map-location-dot"></i> Directions
                     </a>
                 </li>
             @endif

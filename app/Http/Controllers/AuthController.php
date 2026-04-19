@@ -17,6 +17,13 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    public function showStaffRegister()
+    {
+        return view('auth.staff-register', [
+            'staffRoles' => $this->staffRegistrationRoles(),
+        ]);
+    }
+
     public function register(Request $request)
     {
         $request->validate([
@@ -28,6 +35,8 @@ class AuthController extends Controller
             'address' => ['required', 'string'],
             'password' => ['required', 'confirmed', 'min:6'],
         ]);
+
+        $this->logoutCurrentUser($request);
 
         $otp = (string) random_int(100000, 999999);
 
@@ -54,12 +63,43 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('verify.notice')->with('success', 'OTP sent to your email.');
+        return redirect()->route('verify.notice')->with('success', 'Verification code sent to your email.');
+    }
+
+    public function registerStaff(Request $request)
+    {
+        $allowedRoles = array_keys($this->staffRegistrationRoles());
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'role' => ['required', 'string', 'in:' . implode(',', $allowedRoles)],
+            'password' => ['required', 'confirmed', 'min:6'],
+        ]);
+
+        $this->logoutCurrentUser($request);
+
+        $otp = (string) random_int(100000, 999999);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'email_otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        Mail::to($user->email)->send(new SendOtpMail($otp, $user->name));
+
+        Auth::login($user);
+
+        return redirect()->route('verify.notice')->with('success', 'Staff account created. Verification code sent to your email.');
     }
 
     public function showLogin($role = null)
     {
-        $allowedRoles = ['admin', 'doctor', 'receptionist', 'patient'];
+        $allowedRoles = array_keys($this->roleLabels());
 
         if ($role !== null) {
             $role = strtolower($role);
@@ -70,7 +110,7 @@ class AuthController extends Controller
         }
 
         return view('auth.login', [
-            'roleLabel' => $role ? ucfirst($role) : 'User',
+            'roleLabel' => $role ? $this->roleLabels()[$role] : 'User',
             'expectedRole' => $role ?? '',
         ]);
     }
@@ -83,7 +123,11 @@ class AuthController extends Controller
             'expected_role' => ['nullable', 'string'],
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $credentials = $request->only('email', 'password');
+
+        $this->logoutCurrentUser($request);
+
+        if (!Auth::attempt($credentials)) {
             return back()->withErrors([
                 'email' => 'Invalid email or password.',
             ])->withInput();
@@ -113,7 +157,7 @@ class AuthController extends Controller
 
         Mail::to($user->email)->send(new SendOtpMail($otp, $user->name));
 
-        return redirect()->route('verify.notice')->with('success', 'OTP sent to your email.');
+        return redirect()->route('verify.notice')->with('success', 'Verification code sent to your email.');
     }
 
     public function showVerifyOtp()
@@ -135,19 +179,19 @@ class AuthController extends Controller
 
         if (!$user->email_otp || !$user->otp_expires_at) {
             return back()->withErrors([
-                'otp' => 'No OTP found. Please request a new one.',
+                'otp' => 'No verification code found. Please request a new one.',
             ]);
         }
 
         if (now()->greaterThan($user->otp_expires_at)) {
             return back()->withErrors([
-                'otp' => 'OTP has expired. Please request a new one.',
+                'otp' => 'Verification code has expired. Please request a new one.',
             ]);
         }
 
         if ($request->otp !== $user->email_otp) {
             return back()->withErrors([
-                'otp' => 'Invalid OTP.',
+                'otp' => 'Invalid verification code.',
             ]);
         }
 
@@ -177,7 +221,7 @@ class AuthController extends Controller
 
         Mail::to($user->email)->send(new SendOtpMail($otp, $user->name));
 
-        return back()->with('success', 'New OTP sent successfully.');
+        return back()->with('success', 'New verification code sent successfully.');
     }
 
     public function logout(Request $request)
@@ -204,10 +248,63 @@ class AuthController extends Controller
             return redirect()->route('receptionist.dashboard');
         }
 
+        if ($user->hasRole('nurse')) {
+            return redirect()->route('nurse.dashboard');
+        }
+
+        if ($user->hasRole('cne')) {
+            return redirect()->route('cne.dashboard');
+        }
+
+        if ($user->hasRole('housekeeping')) {
+            return redirect()->route('housekeeping.dashboard');
+        }
+
+        if ($user->hasRole('security')) {
+            return redirect()->route('security.dashboard');
+        }
+
         if ($user->hasRole('patient')) {
             return redirect()->route('patient.dashboard');
         }
 
         return redirect()->route('portal')->with('error', 'No role assigned to this account.');
+    }
+
+    private function staffRegistrationRoles(): array
+    {
+        return [
+            'doctor' => 'Doctor',
+            'receptionist' => 'Receptionist',
+            'nurse' => 'Nurse',
+            'cne' => 'CNE',
+            'housekeeping' => 'House Keeping',
+            'security' => 'Security',
+        ];
+    }
+
+    private function roleLabels(): array
+    {
+        return [
+            'admin' => 'Admin',
+            'doctor' => 'Doctor',
+            'receptionist' => 'Receptionist',
+            'nurse' => 'Nurse',
+            'cne' => 'CNE',
+            'housekeeping' => 'House Keeping',
+            'security' => 'Security',
+            'patient' => 'Patient',
+        ];
+    }
+
+    private function logoutCurrentUser(Request $request): void
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
     }
 }
