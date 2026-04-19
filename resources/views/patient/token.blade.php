@@ -30,6 +30,10 @@
                                 <strong>Token Number:</strong>
                                 <span class="badge bg-primary fs-6">{{ $patient->token_number ?? 'Not assigned yet' }}</span>
                             </p>
+                            <p class="mb-0 mt-2">
+                                <strong>Assigned Doctor:</strong>
+                                {{ $patient->assignedDoctor?->name ?? 'Not assigned yet' }}
+                            </p>
                         </div>
                     </div>
                 @else

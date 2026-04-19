@@ -8,6 +8,7 @@ class Patient extends Model
 {
     protected $fillable = [
         'user_id',
+        'assigned_doctor_id',
         'name',
         'gender',
         'age',
@@ -19,6 +20,11 @@ class Patient extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assignedDoctor()
+    {
+        return $this->belongsTo(User::class, 'assigned_doctor_id');
     }
 
     public function treatments()

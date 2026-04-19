@@ -92,6 +92,7 @@ Route::middleware(['auth', 'otp.verified'])->group(function () {
 
     Route::resource('patients', PatientController::class)->except(['show']);
     Route::get('/now-serving', [PatientController::class, 'nowServing'])->name('patients.nowServing');
+    Route::patch('/now-serving/{patient}/queue', [PatientController::class, 'updateQueue'])->name('patients.updateQueue');
     Route::get('/patients/{id}/print-token', [PatientController::class, 'printToken'])->name('patients.printToken');
     Route::post('/patients/{id}/assign-token', [PatientController::class, 'assignToken'])->name('patients.assignToken');
 

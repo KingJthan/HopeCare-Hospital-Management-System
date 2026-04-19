@@ -36,6 +36,7 @@
                         <th>Age</th>
                         <th>Phone</th>
                         <th>Address</th>
+                        <th>Doctor</th>
                         <th width="320">Actions</th>
                     </tr>
                 </thead>
@@ -57,6 +58,7 @@
                             <td>{{ $patient->age }}</td>
                             <td>{{ $patient->phone }}</td>
                             <td>{{ $patient->address }}</td>
+                            <td>{{ $patient->assignedDoctor?->name ?? 'Not assigned' }}</td>
                             <td>
                                 @if(!$patient->token_number)
                                     <form action="{{ route('patients.assignToken', $patient->id) }}" method="POST" class="d-inline">
@@ -86,7 +88,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No patients found.</td>
+                            <td colspan="9" class="text-center">No patients found.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -77,6 +77,7 @@
         <p class="mb-1"><span class="label">Gender:</span> {{ $patient->gender }}</p>
         <p class="mb-1"><span class="label">Age:</span> {{ $patient->age }}</p>
         <p class="mb-1"><span class="label">Phone:</span> {{ $patient->phone }}</p>
+        <p class="mb-1"><span class="label">Doctor:</span> {{ $patient->assignedDoctor?->name ?? 'Not assigned yet' }}</p>
         <p class="mb-1"><span class="label">Date:</span> {{ now()->format('d M Y, h:i A') }}</p>
 
         <div class="footer-note">

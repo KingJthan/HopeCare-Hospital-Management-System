@@ -46,6 +46,11 @@ class User extends Authenticatable
         return in_array($userRole, $normalizedRoles, true);
     }
 
+    public function assignedPatients()
+    {
+        return $this->hasMany(Patient::class, 'assigned_doctor_id');
+    }
+
     public function hasAnyRole(...$roles): bool
     {
         return $this->hasRole($roles);
