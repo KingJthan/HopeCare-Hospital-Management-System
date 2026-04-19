@@ -81,7 +81,7 @@
                             <div class="card-kicker">Reception</div>
                             <h4 class="card-title">Patient registration and tokens</h4>
                             <p class="card-copy mb-0">
-                                Reception staff can register patients, assign service tokens, and print token slips for smoother flow.
+                                Reception staff can register patients, manage automatic service tokens, and print token slips for smoother flow.
                             </p>
                         </div>
                     </div>

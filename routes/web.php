@@ -27,6 +27,7 @@ Route::get('/portal', function () {
 
 Route::view('/services', 'public.services')->name('services');
 Route::view('/care-pathways', 'public.pathways')->name('pathways');
+Route::view('/patient-resources', 'public.resources')->name('resources');
 Route::view('/about', 'public.about')->name('about');
 Route::view('/location', 'public.location')->name('location');
 

@@ -304,6 +304,69 @@
             height: 100%;
         }
 
+        .resource-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::after {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            right: -70px;
+            top: -70px;
+            border-radius: 999px;
+            background: rgba(15, 159, 154, 0.1);
+        }
+
+        .resource-list {
+            display: grid;
+            gap: 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .resource-list li {
+            display: flex;
+            gap: 10px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .resource-list li::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            margin-top: 9px;
+            flex: 0 0 auto;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--teal), var(--blue));
+        }
+
+        .notice-panel {
+            border: 1px solid rgba(212, 154, 42, 0.28);
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(247, 241, 229, 0.96), #ffffff);
+            box-shadow: 0 18px 48px rgba(8, 47, 73, 0.08);
+            padding: 30px;
+        }
+
+        .contact-strip {
+            border-radius: 32px;
+            background:
+                linear-gradient(135deg, rgba(3, 25, 38, 0.96), rgba(15, 108, 191, 0.84)),
+                url('{{ asset('images/reception.jpg') }}') center/cover no-repeat;
+            color: #ffffff;
+            box-shadow: var(--shadow);
+            padding: clamp(28px, 4vw, 44px);
+        }
+
+        .contact-strip p {
+            color: rgba(255, 255, 255, 0.82);
+        }
+
         .metric-card {
             padding: 22px;
         }
@@ -561,6 +624,9 @@
                         <a class="nav-link {{ request()->routeIs('pathways') ? 'active' : '' }}" href="{{ route('pathways') }}">Care Pathways</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('resources') ? 'active' : '' }}" href="{{ route('resources') }}">Resources</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
                     </li>
                     <li class="nav-item">
@@ -608,6 +674,7 @@
                     <div class="d-grid gap-2">
                         <a href="{{ route('services') }}">Services</a>
                         <a href="{{ route('pathways') }}">Care Pathways</a>
+                        <a href="{{ route('resources') }}">Patient Resources</a>
                         <a href="{{ route('about') }}">About</a>
                         <a href="{{ route('location') }}">Location</a>
                     </div>

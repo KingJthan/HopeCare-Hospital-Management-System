@@ -49,6 +49,7 @@
                     <div class="d-grid gap-2">
                         <a href="{{ route('services') }}">Services</a>
                         <a href="{{ route('pathways') }}">Care Pathways</a>
+                        <a href="{{ route('resources') }}">Patient Resources</a>
                         <a href="{{ route('about') }}">About</a>
                     </div>
                 </div>

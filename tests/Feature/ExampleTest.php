@@ -16,4 +16,11 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_patient_resources_page_returns_a_successful_response(): void
+    {
+        $response = $this->get('/patient-resources');
+
+        $response->assertStatus(200);
+    }
 }

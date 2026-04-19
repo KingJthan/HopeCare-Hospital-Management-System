@@ -16,7 +16,7 @@
                     <div class="d-flex flex-column flex-sm-row gap-3 mb-5">
                         <a href="{{ route('login.patient') }}" class="btn btn-hc-gold">Enter Patient Portal</a>
                         <a href="{{ route('staff.register') }}" class="btn btn-hc-primary">Register Staff Account</a>
-                        <a href="{{ route('location') }}" class="btn btn-hc-outline">Get Directions</a>
+                        <a href="{{ route('resources') }}" class="btn btn-hc-outline">Patient Resources</a>
                     </div>
 
                     <div class="row g-3">
@@ -188,6 +188,7 @@
                         </div>
                     </div>
                     <a href="{{ route('pathways') }}" class="btn btn-hc-primary mt-4">View Care Pathways</a>
+                    <a href="{{ route('resources') }}" class="btn btn-hc-outline mt-4 ms-sm-2">Patient Resources</a>
                 </div>
             </div>
         </div>

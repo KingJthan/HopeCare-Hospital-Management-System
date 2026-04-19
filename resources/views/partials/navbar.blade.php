@@ -60,6 +60,9 @@
                     <a class="nav-link {{ request()->routeIs('pathways') ? 'active' : '' }}" href="{{ route('pathways') }}">Care Pathways</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('resources') ? 'active' : '' }}" href="{{ route('resources') }}">Resources</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">About</a>
                 </li>
                 <li class="nav-item">
