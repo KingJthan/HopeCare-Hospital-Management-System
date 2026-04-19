@@ -35,8 +35,10 @@
         .otp-shell {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 18px;
             padding: 34px 16px;
             overflow: hidden;
             position: relative;
@@ -273,6 +275,15 @@
             color: var(--navy);
         }
 
+        .auth-credit-footer {
+            position: relative;
+            z-index: 2;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+        }
+
         .alert {
             border-radius: 16px;
             border: 0;
@@ -402,6 +413,10 @@
                 </div>
             </div>
         </div>
+        <footer class="auth-credit-footer">
+            <div>Copyright {{ date('Y') }} HopeCare Hospital. All rights reserved.</div>
+            <div>Jonathan Mugume VU-BBC-2411-1587-DAY {{ date('Y') }}.</div>
+        </footer>
     </main>
 </body>
 </html>

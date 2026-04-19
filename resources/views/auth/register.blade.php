@@ -18,8 +18,10 @@
         .register-wrapper {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 18px;
             padding: 30px 15px;
         }
 
@@ -57,6 +59,14 @@
 
         .btn-register:hover {
             background: #184f90;
+        }
+
+        .auth-credit-footer {
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
         }
     </style>
 </head>
@@ -151,6 +161,10 @@
                 <a href="{{ route('portal') }}">Back to portal selection</a>
             </div>
         </div>
+        <footer class="auth-credit-footer">
+            <div>Copyright {{ date('Y') }} HopeCare Hospital. All rights reserved.</div>
+            <div>Jonathan Mugume VU-BBC-2411-1587-DAY {{ date('Y') }}.</div>
+        </footer>
     </div>
 </body>
 </html>
