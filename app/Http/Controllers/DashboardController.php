@@ -16,12 +16,35 @@ class DashboardController extends Controller
             abort(403);
         }
 
+        $patientsByGender = Patient::get(['gender'])
+            ->groupBy(function ($patient) {
+                return $patient->gender ? ucfirst(strtolower($patient->gender)) : 'Unspecified';
+            })
+            ->map->count();
+
+        $drugsByCategory = Category::withCount('drugs')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function ($category) {
+                return [$category->name => $category->drugs_count];
+            });
+
         return view('dashboards.admin-dashboard', [
             'totalPatients' => Patient::count(),
             'totalDrugs' => Drug::count(),
             'totalCategories' => Category::count(),
             'totalTreatments' => Treatment::count(),
             'recentPatients' => Patient::latest()->take(5)->get(),
+            'dashboardData' => [
+                'patientsByGender' => [
+                    'labels' => $patientsByGender->keys()->values(),
+                    'values' => $patientsByGender->values(),
+                ],
+                'drugsByCategory' => [
+                    'labels' => $drugsByCategory->keys()->values(),
+                    'values' => $drugsByCategory->values(),
+                ],
+            ],
         ]);
     }
 

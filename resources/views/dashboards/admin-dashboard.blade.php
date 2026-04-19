@@ -50,6 +50,39 @@
         </div>
     </div>
 
+    <div class="row g-4 mb-4">
+        <div class="col-xl-7">
+            <div class="dashboard-panel chart-panel">
+                <div class="chart-heading">
+                    <div>
+                        <span class="chart-kicker">Graph</span>
+                        <h5 class="mb-1">Patient Registration Mix</h5>
+                        <p class="text-muted mb-0">A quick view of registered patients by gender.</p>
+                    </div>
+                    <span class="chart-badge">Live records</span>
+                </div>
+                <div class="chart-frame">
+                    <canvas id="patientsChart" aria-label="Patient registration graph" role="img"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="dashboard-panel chart-panel">
+                <div class="chart-heading">
+                    <div>
+                        <span class="chart-kicker">Pie chart</span>
+                        <h5 class="mb-1">Drug Categories</h5>
+                        <p class="text-muted mb-0">See how pharmacy inventory is spread across categories.</p>
+                    </div>
+                    <span class="chart-badge">Pharmacy</span>
+                </div>
+                <div class="chart-frame chart-frame-sm">
+                    <canvas id="drugsChart" aria-label="Drug category pie chart" role="img"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-lg-7">
             <div class="custom-card">
@@ -97,3 +130,10 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        window.dashboardData = @json($dashboardData);
+    </script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
+@endpush
