@@ -12,7 +12,7 @@
                     <div class="dashboard-eyebrow">Front desk flow</div>
                     <h1>Premium first contact for every patient.</h1>
                     <p class="mb-0">
-                        Register patients, assign tokens, and keep the waiting experience organized from arrival to clinical handoff.
+                        Register patients, manage automatic tokens, and keep the waiting experience organized from arrival to clinical handoff.
                     </p>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             <div class="dashboard-panel">
                 <img src="{{ asset('images/walk-way.jpg') }}" alt="Hospital walkway" class="img-fluid w-100 mb-3">
                 <h5>Reception Actions</h5>
-                <p class="text-muted">Keep arrivals moving with registration, token assignment, and queue visibility.</p>
+                <p class="text-muted">Keep arrivals moving with registration, automatic token visibility, and queue support.</p>
                 <a href="{{ route('patients.create') }}" class="btn btn-custom-primary w-100 mb-2">Register Patient</a>
                 <a href="{{ route('patients.nowServing') }}" class="btn btn-outline-primary w-100">Now Serving</a>
             </div>

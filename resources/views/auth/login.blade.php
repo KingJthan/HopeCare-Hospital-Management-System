@@ -377,8 +377,7 @@
             </div>
         </div>
         <footer class="auth-credit-footer">
-            <div>Copyright {{ date('Y') }} HopeCare Hospital. All rights reserved.</div>
-            <div>Jonathan Mugume VU-BBC-2411-1587-DAY {{ date('Y') }}.</div>
+            Copyright {{ date('Y') }} HopeCare Hospital. All rights reserved. | Jonathan Mugume VU-BBC-2411-1587-DAY {{ date('Y') }}.
         </footer>
     </main>
 </body>

@@ -173,7 +173,7 @@
                     <div class="d-grid gap-3">
                         <div class="path-card">
                             <span class="number-step">1</span>
-                            <h5 class="card-title">Reception registers and assigns tokens</h5>
+                            <h5 class="card-title">Patients receive tokens automatically</h5>
                             <p class="card-copy mb-0">Front desk teams can register patients and keep the queue moving.</p>
                         </div>
                         <div class="path-card">

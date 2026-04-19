@@ -29,15 +29,13 @@ class PatientController extends Controller
             'address' => 'required|string',
         ]);
 
-        $tokenNumber = $this->generateNextToken();
-
         Patient::create([
             'name' => $request->name,
             'gender' => $request->gender,
             'age' => $request->age,
             'phone' => $request->phone,
             'address' => $request->address,
-            'token_number' => $tokenNumber,
+            'token_number' => Patient::nextTokenNumber(),
         ]);
 
         return redirect()->route('patients.index')->with('success', 'Patient added successfully.');
@@ -100,7 +98,7 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
 
         if (!$patient->token_number) {
-            $patient->token_number = $this->generateNextToken();
+            $patient->token_number = Patient::nextTokenNumber();
             $patient->save();
         }
 
@@ -118,26 +116,10 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
 
         if (!$patient->token_number) {
-            $patient->token_number = $this->generateNextToken();
+            $patient->token_number = Patient::nextTokenNumber();
             $patient->save();
         }
 
         return redirect()->route('patients.index')->with('success', 'Token assigned successfully.');
-    }
-
-    private function generateNextToken()
-    {
-        $lastPatient = Patient::whereNotNull('token_number')
-            ->orderBy('id', 'desc')
-            ->first();
-
-        $nextNumber = 1;
-
-        if ($lastPatient && $lastPatient->token_number) {
-            $lastNumber = (int) preg_replace('/[^0-9]/', '', $lastPatient->token_number);
-            $nextNumber = $lastNumber + 1;
-        }
-
-        return 'F' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
     }
 }

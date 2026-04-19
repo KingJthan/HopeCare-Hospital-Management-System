@@ -25,4 +25,20 @@ class Patient extends Model
     {
         return $this->hasMany(Treatment::class);
     }
+
+    public static function nextTokenNumber(): string
+    {
+        $lastPatient = self::whereNotNull('token_number')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $nextNumber = 1;
+
+        if ($lastPatient && $lastPatient->token_number) {
+            $lastNumber = (int) preg_replace('/[^0-9]/', '', $lastPatient->token_number);
+            $nextNumber = $lastNumber + 1;
+        }
+
+        return 'F' . str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
+    }
 }

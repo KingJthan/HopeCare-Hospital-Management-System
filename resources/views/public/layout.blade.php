@@ -629,8 +629,7 @@
                 </div>
             </div>
             <hr class="border-secondary my-4">
-            <small class="d-block">Copyright {{ date('Y') }} HopeCare Hospital. All rights reserved.</small>
-            <small class="d-block mt-1">Jonathan Mugume VU-BBC-2411-1587-DAY {{ date('Y') }}.</small>
+            <small class="d-block text-center">Copyright {{ date('Y') }} HopeCare Hospital. All rights reserved. | Jonathan Mugume VU-BBC-2411-1587-DAY {{ date('Y') }}.</small>
         </div>
     </footer>
 

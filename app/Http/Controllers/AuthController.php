@@ -56,7 +56,7 @@ class AuthController extends Controller
             'age' => $request->age,
             'phone' => $request->phone,
             'address' => $request->address,
-            'token_number' => null,
+            'token_number' => Patient::nextTokenNumber(),
         ]);
 
         Mail::to($user->email)->send(new SendOtpMail($otp, $user->name));
